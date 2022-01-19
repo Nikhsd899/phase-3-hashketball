@@ -1,16 +1,13 @@
-# Write your code below game_hash
-require 'pry'
-
 def game_hash
 	{
 		home: {
-			team_name: "Brooklyn Nets",
+			team_name: "Brooklyn Nets", 
 			colors: ["Black", "White"],
 			players: [
 				{
 					player_name: "Alan Anderson",
 					number: 0,
-					shoe: 16,
+					shoe: 16, 
 					points: 22,
 					rebounds: 12,
 					assists: 12,
@@ -26,7 +23,7 @@ def game_hash
 					rebounds: 12,
 					assists: 12,
 					steals: 12,
-					blocks: 12,
+					blocks: 12, 
 					slam_dunks: 7
 				},
 				{
@@ -50,6 +47,7 @@ def game_hash
 					steals: 3,
 					blocks: 8,
 					slam_dunks: 5
+
 				},
 				{
 					player_name: "Jason Terry",
@@ -93,20 +91,20 @@ def game_hash
 				{
 					player_name: "DeSagna Diop",
 					number: 2,
-					shoe: 14,
+					shoes: 14,
 					points: 24,
-					rebounds: 12,
+					rebounds: 12, 
 					assists: 12,
-					steals: 4,
+					steals: 4, 
 					blocks: 5,
 					slam_dunks: 5
 				},
 				{
 					player_name: "Ben Gordon",
 					number: 8,
-					shoe: 15,
+					shoe: 15, 
 					points: 33,
-					rebounds: 3,
+					rebounds: 3, 
 					assists: 2,
 					steals: 1,
 					blocks: 1,
@@ -117,7 +115,7 @@ def game_hash
 					number: 33,
 					shoe: 15,
 					points: 6,
-					rebounds: 12,
+					rebounds: 12, 
 					assists: 12,
 					steals: 7,
 					blocks: 5,
@@ -128,67 +126,58 @@ def game_hash
 	}
 end
 
-def get_player(name)
-	game_hash.values.each {|team|
-		team[:players].each {|player|
-			if player[:player_name] == name
-				return player
-			end
-		}
-	}
+def all_players
+	game_hash[:home][:players] + game_hash[:away][:players]
 end
 
-
-def num_points_scored(name)
-	get_player(name)[:points]
+def num_points_scored(player_name)
+	player = player_stats(player_name)
+	player[:points]
 end
 
-def shoe_size(name)
-	get_player(name)[:shoe]
+def shoe_size(player_name)
+	player = player_stats(player_name)
+	player[:shoe]
 end
 
-def team_colors(name_of_team)
-	game_hash.values.each { |team|
-		if team[:team_name] == name_of_team
-			return team[:colors]
-		end
-	}
+def find_team(team_name)
+	team_info = game_hash.find do |location, team_data|
+		team_data[:team_name] == team_name
+	end
+
+	team_info[1]
+end
+
+def team_colors(team_name)
+	team = find_team(team_name)
+	team[:colors]
 end
 
 def team_names
-	game_hash.values.map {|team| team[:team_name]}
+	game_hash.map do |location, team_data|
+		team_data[:team_name]
+	end
 end
 
-def player_numbers(name_of_team)
-	game_hash.values.each {|team|
-		if team[:team_name] == name_of_team
-			return team[:players].map {|player| player[:number]}
-		end
-	}
+def player_numbers(team_name)
+	team = find_team(team_name)
+	team[:players].map do |player|
+		player[:number]
+	end
 end
 
 def player_stats(player_name)
-	get_player(player_name)
+	all_players.find do |player|
+		player[:player_name] == player_name
+	end
+end
+
+def big_shoe_player
+	all_players.max_by do |player|
+		player[:shoe]
+	end
 end
 
 def big_shoe_rebounds
-	# look through all the players
-	# check to see what size shoe they have
-	# if the shoe size is larger than those found before, remember it!
-	# once we're done looking at all the players, return the rebounds for the
-	# found player
-
-	the_brain = {shoe_size: 0, player: nil}
-
-	game_hash.values.each {|team|
-		team[:players].each {|player|
-			if player[:shoe] > the_brain[:shoe_size]
-				the_brain[:shoe_size] = player[:shoe]
-				the_brain[:player] = player
-			end
-		}
-	}
-	the_brain[:player][:rebounds]
-
+	big_shoe_player[:rebounds]
 end
-# Write code here
